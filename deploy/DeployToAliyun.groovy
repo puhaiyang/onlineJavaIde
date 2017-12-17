@@ -4,6 +4,10 @@
  * desc: 将项目部署到阿里云服务器脚本
  */
 node {
+    def HOST_PWD = "your_host_password,eg:123456"
+    def HOST_USERNAME = "your_host_user,eg:root"
+    def HOST_NAME = "your_host_name,eg:192.168.1.103"
+
     stage('get clone') {
         checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], gitTool: 'Default', submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/puhaiyang/onlineJavaIde.git']]])
     }
@@ -20,11 +24,9 @@ node {
         }
     }
 
-
-
     stage('depoly') {
-        sh 'sshpass -p  hostpassword ssh  -o StrictHostKeyChecking=no username@hostname ls'
-        sh 'sshpass -p  hostpassword scp  -o StrictHostKeyChecking=no  target/*.jar username@hostname:.'
+        sh 'sshpass -p  ' + HOST_PWD + ' ssh  -o StrictHostKeyChecking=no ' + HOST_USERNAME + '@' + HOST_NAME + ' ls'
+        sh 'sshpass -p  ' + HOST_PWD + ' scp  -o StrictHostKeyChecking=no  target/*.jar ' + HOST_USERNAME + '@' + HOST_NAME + ':.'
         echo 'haha'
     }
     //    -p:指定ssh的密码
